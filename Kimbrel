@@ -1,0 +1,19 @@
+playerid_lookup("Kimbrel","Craig")
+
+scrape_statcast_savant_pitcher("2019-01-01","2019-12-31",518886)
+#repear above for all seasons
+
+#bind rows
+kimbrel <- bind_rows(kim2015,kim2016,kim2017,kim2018,kim2019)
+
+
+
+#plot it
+ggplot(kimbrel %>% filter(game_year %in% c(2017,2018,2019) & (pitch_name =='4-Seam Fastball' | pitch_name =='Knuckle Curve') ),aes(plate_x,plate_z))+facet_grid(game_year~pitch_name)+stat_density2d(aes(fill=..level..),geom='polygon',n=200)+scale_fill_gradient(low='light blue',high='red')+annotate('rect', xmin = -.85, xmax = .85, ymin = 1.593172, ymax = 3.357285,alpha=.01,color='black')+annotate("segment", x = -.2833, xend = -.2833, y=1.593172, yend = 3.357285,alpha=.5) +annotate("segment", x=.2833, xend = .2833, y=1.593172, yend = 3.357285,alpha=.5)+annotate("segment",x=-.85, xend = .85, y = 2.18121, yend = 2.18121,alpha=.5)+annotate("segment",x=-.85, xend = .85, y = 2.769247, yend = 2.769247,alpha=.5)+annotate("segment", x=0,xend = 0,y=3.35728, yend = 5.5,alpha=.5)+annotate("segment",x=0,xend=0,y=1.593172,yend=0,alpha=.5)+annotate('segment',x=-.85, xend = -2, y=2.475229, yend = 2.475229,alpha=.5)+annotate('segment',x=.85, xend = 2, y=2.475229, yend = 2.475229,alpha=.5) +labs(title = "Craig Kimbrel Pitch Location 2017, 2018, & 2019",x="Catcher's View", y='', caption = 'Source: Baseball Savant; baseballr')+theme_bw()
+
+#velo graph
+mph<-kimbrel %>% filter(pitch_name =='Knuckle Curve' | pitch_name =='4-Seam Fastball') %>% group_by(game_year,pitch_name) %>% summarise(count=n(),mph=mean(release_speed,na.rm=T),spin=mean(release_spin_rate,na.rm=T))  %>% arrange(pitch_name)%>%ggplot(aes(game_year,mph))+geom_line(aes(color=pitch_name),size=.8)+geom_point(aes(color=pitch_name),size=2.5)+scale_y_continuous(breaks = seq(85,100,1))+theme_bw()+scale_color_manual(values = c("#0E3386","#CC3433"))+labs(title = "Craig Kimbrel 4 Seam FB and Curveball Velocity by Year",x='Season',y='MPH',caption = 'Source: Baseball Savant; baseballr')
+
+#spin graph
+spinrate<-kimbrel %>% filter(pitch_name =='Knuckle Curve' | pitch_name =='4-Seam Fastball') %>% group_by(game_year,pitch_name) %>% summarise(count=n(),mph=mean(release_speed,na.rm=T),spin=mean(release_spin_rate,na.rm=T))  %>% arrange(pitch_name)%>%ggplot(aes(game_year,spin))+geom_line(aes(color=pitch_name),size=.8)+geom_point(aes(color=pitch_name),size=2.5)+theme_bw()+scale_color_manual(values = c("#0E3386","#CC3433"))+labs(title = "Craig Kimbrel 4 Seam FB and Curveball Spin Rate by Year",x='Season',y='Spin',caption = 'Source: Baseball Savant; baseballr')+scale_y_continuous(breaks = seq(2300,2600,50))
+
