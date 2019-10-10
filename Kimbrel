@@ -17,3 +17,5 @@ mph<-kimbrel %>% filter(pitch_name =='Knuckle Curve' | pitch_name =='4-Seam Fast
 #spin graph
 spinrate<-kimbrel %>% filter(pitch_name =='Knuckle Curve' | pitch_name =='4-Seam Fastball') %>% group_by(game_year,pitch_name) %>% summarise(count=n(),mph=mean(release_speed,na.rm=T),spin=mean(release_spin_rate,na.rm=T))  %>% arrange(pitch_name)%>%ggplot(aes(game_year,spin))+geom_line(aes(color=pitch_name),size=.8)+geom_point(aes(color=pitch_name),size=2.5)+theme_bw()+scale_color_manual(values = c("#0E3386","#CC3433"))+labs(title = "Craig Kimbrel 4 Seam FB and Curveball Spin Rate by Year",x='Season',y='Spin',caption = 'Source: Baseball Savant; baseballr')+scale_y_continuous(breaks = seq(2300,2600,50))
 
+#arrange the plots into one
+grid.arrange(mph, spinrate, ncol = 1)
