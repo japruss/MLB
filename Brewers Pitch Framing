@@ -1,0 +1,15 @@
+#Scrape 5 pitchers using for project
+woodruff<-scrape_statcast_savant_pitcher("2019-01-01","2019-12-31",605540)
+davies<-scrape_statcast_savant_pitcher("2019-01-01","2019-12-31",605200)
+anderson<-scrape_statcast_savant_pitcher("2019-01-01","2019-12-31",502624)
+houser<-scrape_statcast_savant_pitcher("2019-01-01","2019-12-31",605288)
+hader<-scrape_statcast_savant_pitcher("2019-01-01","2019-12-31",623352)
+
+#combine into one file
+brew <- bind_rows(houser,hader2019,davies,anderson,woodruff)
+
+#Bring in Yas and Manny's names by id number
+brew$catcher <- if_else(brew$fielder_2 == 518735, "Grandal", if_else(brew$fielder_2 == 444489, "Pina","Nottingham"))
+
+#plot
+ggplot(brew %>% filter((description=='called_strike' | description =='ball' ) & player_name !='Gio Gonzalez' & catcher != 'Nottingham' & ((plate_x >= -1.2 & plate_x <= -.75)|(plate_x >= .75 & plate_x <= 1.2)| (plate_z < 1.8 & plate_z > 1)| (plate_z > 3 & plate_z < 4.5)  )) ,aes(plate_x,plate_z))+facet_grid(player_name~catcher)+theme_classic()+scale_x_continuous(limits=c(-1.5,1.5))+scale_y_continuous(limits = c(1.2,3.7),breaks=NULL)+scale_color_manual(values=c('#B6922E','#0A2351'))+geom_point(aes(color=description,shape=description),size=1.5)+scale_shape_manual(values = c(19,19))+annotate('rect', xmin = -.85, xmax = .85, ymin = 1.593172, ymax = 3.357285,alpha=.01,color='black',size=.8)+annotate('rect', xmin = -1.1, xmax = 1.1, ymin = 1.343172,, ymax = 3.607285,alpha=.01,color='red',size=.8)+labs(title = "Brewers Pitch Framing 2019", x = "Catcher's View", y='',caption = 'Source: Baseball Savant; baseballr')
