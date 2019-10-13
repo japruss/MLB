@@ -27,7 +27,7 @@ barrelpitchspeed<-ggplot(keston%>%filter(strike=='Barrel' & pitch=='4-Seam Fastb
 
 #add labels to all charts
 swingstrikeheat<-swingstrikeheat + labs(title = "Keston Hiura 2019 Swinging Strikes,x='',y='',subtitle = "Red = More Swings and Misses")
-barrelheat<-barrelheat+ labs(title = "Keston Hiura 2019 'Barrels'",x='',y='',subtitle = "Red = Location of Balls Barrelled Up")
+barrelheat<-barrelheat+ labs(title = "Keston Hiura 2019 'Barrels'",x='',y='',subtitle = "Red = Location of Balls Barreled Up")
 swingstrikeall<-swingstrikeall +labs(x='',y='',subtitle = 'Location & Pitch Type Of Swings And Misses')
 barrelallpitch<-barrelallpitch+labs(x='',y='',subtitle = 'Location & Pitch Type Of Barrels')
 SSpitchspeed<-SSpitchspeed + labs(y='',x="Catcher's View",subtitle = '4-Seam FB Location & Pitch Velocity Of Swings And Misses')
