@@ -1,0 +1,33 @@
+#scrape 3 years of Yeli
+playerid_lookup("Yelich","Christian")
+yeli17<scrape_statcast_savant_batter("2017-01-01","2017-12-31",592885)
+yeli18<scrape_statcast_savant_batter("2018-01-01","2018-12-31",592885)
+yeli19<scrape_statcast_savant_batter("2019-01-01","2019-12-31",592885)
+
+#combine yeli
+yeli <- bind_rows(yeli17,yeli18,yeli19)
+
+#find strasburg and flaherty ID
+playerid_lookup("Flaherty","Jack") #656427
+playerid_lookup("Strasburg","Stephen") #544931
+
+#new column for Strasburg and FLaherty
+yeli$pitchername <- if_else(yeli$pitcher == 656427, "Flaherty", if_else(yeli$pitcher == 544931, "Strasburg", ""))
+
+#new column so all pitches have same name (curveball)
+yeli$pitch <- if_else(yeli$pitch_name == 'Knuckle Curve', "Curveball", yeli$pitch_name)
+
+#new DF to only work with Stras and Flaherty
+yeli.fs <- yeli %>% filter(pitchername !='')
+
+#new column for clean events
+yeli.fs$event <- if_else(is.na(yeli.fs$events), "Pitch (no play)", if_else(yeli.fs$events == 'double', "Double", if_else(yeli.fs$events == 'field_out', 'Out', if_else(yeli.fs$events == 'fielders_choice',"Fielders Choice",if_else(yeli.fs$events == 'grounded_into_double_play','Grounded DP',if_else(yeli.fs$events == 'single','Single',if_else(yeli.fs$events == 'strikeout',"Strikeout",if_else(yeli.fs$events == 'walk',"Walk",yeli.fs$events))))))))
+
+#create spray chart chart - Update colors and theme
+yeli.fs %>% filter(event!='Strikeout' & event!='Walk' & event!='Pitch (no play)') %>% ggspraychart(x_value = "hc_x", y_value = "-hc_y",fill_value = 'event')+facet_wrap(.~pitchername)+scale_fill_colorblind()
+
+#create ggplot for pitch location - Update colors, shapes, theme, source
+ggplot(yeli.fs,aes(plate_x,plate_z))+geom_point(aes(color=event,shape=pitch))+facet_wrap(.~pitchername)+annotate('rect', xmin = -.85, xmax = .85, ymin = 1.593172, ymax = 3.357285,alpha=.01,color='black')
+
+
+
