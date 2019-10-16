@@ -1,0 +1,25 @@
+#get date from 2016-2019 on players used and combine all files
+yeli19 <- scrape_statcast_savant_batter("2019-01-01","2019-12-31",592885)
+yeli18 <- scrape_statcast_savant_batter("2018-01-01","2018-12-31",592885)
+yeli17 <- scrape_statcast_savant_batter("2017-01-01","2017-12-31",592885)
+yeli16 <- scrape_statcast_savant_batter("2016-01-01","2016-12-31",592885)
+
+betts19 <- scrape_statcast_savant_batter("2019-01-01","2019-12-31",605141)
+betts18 <- scrape_statcast_savant_batter("2018-01-01","2018-12-31",605141)
+betts17 <- scrape_statcast_savant_batter("2017-01-01","2017-12-31",605141)
+betts16 <- scrape_statcast_savant_batter("2016-01-01","2016-12-31",605141)
+
+trout19 <- scrape_statcast_savant_batter("2019-01-01","2019-12-31",545361)
+trout18 <- scrape_statcast_savant_batter("2018-01-01","2018-12-31",545361)
+trout17 <- scrape_statcast_savant_batter("2017-01-01","2017-12-31",545361)
+trout16 <- scrape_statcast_savant_batter("2016-01-01","2016-12-31",545361)
+
+sanc19 <- scrape_statcast_savant_batter("2019-01-01","2019-12-31",596142)
+sanc18 <- scrape_statcast_savant_batter("2018-01-01","2018-12-31",596142)
+sanc17 <- scrape_statcast_savant_batter("2017-01-01","2017-12-31",596142)
+sanc16 <- scrape_statcast_savant_batter("2016-01-01","2016-12-31",596142)
+
+lacomp <- bind_rows(yeli16,yeli17,yeli18,yeli19,betts16,betts17,betts18,betts19,trout16,trout17,trout18,trout19,sanc16,sanc17,sanc18,sanc19)
+
+#begin to make variables to graph
+lacomp %>% filter(game_type =='R' & type=='X') %>% group_by(game_year,player_name) %>% summarise(pitches=n(), LA = round(mean(launch_angle,na.rm=T),1),BBE = sum(type=='X'), HR = sum(events=='home_run'), HR.BBE = round(HR/BBE,3)) 
